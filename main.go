@@ -2,8 +2,11 @@ package main
 
 import (
 	"monkey/core"
+	"os"
 )
 
+
 func main() {
-	core.NewToken(core.ASSIGN, "=")
+	instance := core.Repl {}
+	instance.Run(os.Stdin, os.Stdout)
 }

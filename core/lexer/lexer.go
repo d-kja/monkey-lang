@@ -21,6 +21,14 @@ func (self Lexer) New(input string) *Lexer {
 	return &instance
 }
 
+func (self Lexer) Peek() byte {
+	if self.NextPosition >= uint(len(self.Input)) {
+		return 0
+	}
+
+	return self.Input[self.NextPosition]
+}
+
 func (self *Lexer) readChar() {
 	if self.NextPosition >= uint(len(self.Input)) {
 		self.Char = 0
@@ -97,7 +105,55 @@ func (self *Lexer) Read() tokens.Token {
 	switch {
 	case self.Char == '=':
 		{
+			nextToken := self.Peek()
+
+			if nextToken == '=' {
+				token = tokens.NewTokenAsString(tokens.EQUALS, string(self.Char) + string(nextToken))
+				self.readChar()
+
+				break
+			}
+
 			token = tokens.NewToken(tokens.ASSIGN, self.Char)
+		}
+	case self.Char == '!':
+		{
+			nextToken := self.Peek()
+
+			if nextToken == '=' {
+				token = tokens.NewTokenAsString(tokens.DIFFERENT, string(self.Char) + string(nextToken))
+				self.readChar()
+
+				break
+			}
+
+			token = tokens.NewToken(tokens.NOT, self.Char)
+		}
+	case self.Char == '<':
+		{
+			nextToken := self.Peek()
+
+			if nextToken == '=' {
+				token = tokens.NewTokenAsString(tokens.SMALLER_OR_EQUALS, string(self.Char) + string(nextToken))
+				self.readChar()
+
+				break
+			}
+
+			token = tokens.NewToken(tokens.SMALLER_THAN, self.Char)
+		}
+	case self.Char == '>':
+		{
+			nextToken := self.Peek()
+
+			if nextToken == '=' {
+				token = tokens.NewTokenAsString(tokens.GREATER_OR_EQUALS, string(self.Char) + string(nextToken))
+				self.readChar()
+
+				break
+			}
+
+			token = tokens.NewToken(tokens.GREATER_THAN, self.Char)
 		}
 	case self.Char == '+':
 		{
